@@ -1,1 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TuNombre | Roblox Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E13D3D;
+    --red-dark: #B02E2E;
+    --red-glow: rgba(225, 61, 61, 0.18);
+    --bg: #0D0D0F;
+    --bg2: #141418;
+    --bg3: #1A1A20;
+    --border: rgba(255,255,255,0.07);
+    --border-red: rgba(225, 61, 61, 0.3);
+    --text: #F0EEE8;
+    --muted: #888;
+    --accent: #FF6B35;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
 
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Grid BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+    background: rgba(13,13,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--red); }
+  nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  nav ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 3rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red-glow);
+    border: 1px solid var(--border-red);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    color: var(--red);
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+    width: fit-content;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 6.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1px;
+    margin-bottom: 0.5rem;
+  }
+  h1 .name { display: block; color: var(--text); }
+  h1 .title {
+    display: block;
+    color: var(--red);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 400;
+  }
+  .hero-desc {
+    max-width: 520px;
+    color: var(--muted);
+    margin: 1.5rem 0 2.5rem;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--red-dark); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-red);
+    color: var(--red);
+  }
+  .btn-outline:hover { background: var(--red-glow); }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-num span { color: var(--red); }
+  .stat-label { font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 3rem;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 2.5rem;
+    line-height: 1.1;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .about-text p { color: var(--muted); margin-bottom: 1rem; line-height: 1.8; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .skill-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    transition: border-color 0.2s;
+  }
+  .skill-item:hover { border-color: var(--border-red); }
+  .skill-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .skill-bar {
+    height: 3px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .skill-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--accent));
+    border-radius: 2px;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .project-card:hover {
+    border-color: var(--border-red);
+    transform: translateY(-3px);
+  }
+  .project-thumb {
+    height: 150px;
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .project-thumb::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40px;
+    background: linear-gradient(to top, var(--bg2), transparent);
+  }
+  .project-body { padding: 1.25rem; }
+  .project-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .tag {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    background: var(--red-glow);
+    border: 1px solid var(--border-red);
+    color: var(--red);
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+  .project-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .project-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .price-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .price-card.featured {
+    border-color: var(--red);
+    background: linear-gradient(135deg, var(--bg2) 0%, rgba(225,61,61,0.05) 100%);
+  }
+  .featured-badge {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .price-tier {
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .price-amount {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .price-amount .currency { font-size: 1.4rem; vertical-align: top; margin-top: 6px; display: inline-block; color: var(--red); }
+  .price-period { font-size: 12px; color: var(--muted); margin-bottom: 1.5rem; }
+  .price-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 1.75rem;
+  }
+  .price-features li {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .price-features li::before {
+    content: '→';
+    color: var(--red);
+    font-family: 'Space Mono', monospace;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* QUOTE TABLE */
+  .quote-table-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .quote-table-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    padding: 12px 1.5rem;
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 14px 1.5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    vertical-align: middle;
+  }
+  td:first-child { color: var(--text); font-weight: 500; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .price-cell {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--red) !important;
+  }
+  .time-cell {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .contact-info p { color: var(--muted); margin-bottom: 1.5rem; line-height: 1.8; }
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 1.25rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s;
+    font-size: 14px;
+  }
+  .contact-link:hover { border-color: var(--border-red); }
+  .contact-link-icon {
+    width: 34px; height: 34px;
+    background: var(--red-glow);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .contact-link-label { font-size: 11px; color: var(--muted); display: block; }
+
+  .notice {
+    background: var(--bg2);
+    border: 1px solid var(--border-red);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .notice-icon { font-size: 18px; flex-shrink: 0; }
+  .notice p { font-size: 13px; color: var(--muted); line-height: 1.7; margin: 0; }
+  .notice strong { color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+  }
+  footer span { color: var(--red); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .hero { padding: 5rem 1.5rem 3rem; }
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    section { padding: 3rem 1.5rem; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span>RBX</span>DEV</div>
+  <ul>
+    <li><a href="#about">Sobre mí</a></li>
+    <li><a href="#projects">Proyectos</a></li>
+    <li><a href="#pricing">Precios</a></li>
+    <li><a href="#contact">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div style="position:relative;z-index:1">
+<section class="hero" id="home">
+  <div class="hero-tag">Disponible para proyectos</div>
+  <h1>
+    <span class="name">TuNombre</span>
+    <span class="title">Roblox Developer</span>
+  </h1>
+  <p class="hero-desc">
+    Desarrollo juegos y experiencias en Roblox desde hace más de <strong>X años</strong>. Especializado en scripting con Lua, sistemas de juego complejos, monetización y UI/UX para Roblox.
+  </p>
+  <div class="hero-actions">
+    <a href="#pricing" class="btn btn-primary">Ver precios</a>
+    <a href="#projects" class="btn btn-outline">Mis proyectos</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-num">+<span>XX</span></div>
+      <div class="stat-label">Proyectos entregados</div>
+    </div>
+    <div>
+      <div class="stat-num"><span>X</span>M+</div>
+      <div class="stat-label">Visitas en juegos</div>
+    </div>
+    <div>
+      <div class="stat-num"><span>X</span></div>
+      <div class="stat-label">Años de experiencia</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="divider">
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">// 01 — Sobre mí</div>
+  <h2>Quien soy</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Soy un desarrollador de Roblox apasionado por crear experiencias únicas e inmersivas. Me especializo en scripting con <strong>Lua/Luau</strong>, diseño de sistemas de juego, monetización con Robux y desarrollo de interfaces de usuario.</p>
+      <p>He trabajado en proyectos de distintas categorías: simuladores, tycoons, RPGs, obbys y experiencias de roleplay. Cada proyecto lo trato con profesionalismo y compromiso para entregar resultados de calidad.</p>
+      <p>Trabajo de forma independiente y acepto proyectos de forma remota para clientes en todo el mundo, con comunicación fluida en <strong>Español e Inglés</strong>.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-item">
+        <div class="skill-name">Lua / Luau</div>
+        <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Game Design</div>
+        <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">UI / UX Roblox</div>
+        <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">DataStore / Backend</div>
+        <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Monetización</div>
+        <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Animaciones / VFX</div>
+        <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">// 02 — Proyectos</div>
+  <h2>Trabajos destacados</h2>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-thumb">🏰</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">RPG</span>
+          <span class="tag">Luau</span>
+        </div>
+        <div class="project-name">Nombre del Juego 1</div>
+        <div class="project-desc">Breve descripción del proyecto. Menciona qué sistemas creaste, cuántas visitas tiene, o cualquier logro destacado.</div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-thumb">🏙️</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">Tycoon</span>
+          <span class="tag">Monetización</span>
+        </div>
+        <div class="project-name">Nombre del Juego 2</div>
+        <div class="project-desc">Breve descripción del proyecto. Habla de las mecánicas principales, el sistema de progresión o lo que más destaca.</div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-thumb">⚔️</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="tag">Combat System</span>
+          <span class="tag">Scripting</span>
+        </div>
+        <div class="project-name">Nombre del Juego 3</div>
+        <div class="project-desc">Breve descripción del proyecto. Destaca lo más técnico o creativo que desarrollaste en este juego.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-label">// 03 — Precios</div>
+  <h2>Paquetes de servicio</h2>
+
+  <div class="pricing-grid">
+
+    <div class="price-card">
+      <div class="price-tier">Básico</div>
+      <div class="price-amount"><span class="currency">$</span>XX</div>
+      <div class="price-period">USD — pago único</div>
+      <ul class="price-features">
+        <li>Script / sistema pequeño</li>
+        <li>Hasta 1 revisión incluida</li>
+        <li>Entrega en 3–5 días</li>
+        <li>Soporte básico post-entrega</li>
+      </ul>
+      <a href="#contact" class="btn btn-outline" style="width:100%;justify-content:center;">Solicitar</a>
+    </div>
+
+    <div class="price-card featured">
+      <div class="featured-badge">⭐ Más solicitado</div>
+      <div class="price-tier">Estándar</div>
+      <div class="price-amount"><span class="currency">$</span>XXX</div>
+      <div class="price-period">USD — pago único</div>
+      <ul class="price-features">
+        <li>Sistema mediano o juego funcional</li>
+        <li>Hasta 3 revisiones</li>
+        <li>Entrega en 7–14 días</li>
+        <li>UI personalizada incluida</li>
+        <li>Soporte 7 días post-entrega</li>
+      </ul>
+      <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center;">Solicitar</a>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Premium</div>
+      <div class="price-amount"><span class="currency">$</span>XXX+</div>
+      <div class="price-period">USD — cotización personalizada</div>
+      <ul class="price-features">
+        <li>Juego completo / proyecto largo</li>
+        <li>Revisiones ilimitadas</li>
+        <li>Plazo acordado en contrato</li>
+        <li>Monetización + DataStore</li>
+        <li>Soporte 30 días post-entrega</li>
+      </ul>
+      <a href="#contact" class="btn btn-outline" style="width:100%;justify-content:center;">Cotizar</a>
+    </div>
+
+  </div>
+
+  <!-- Quote table -->
+  <div class="quote-table-wrap">
+    <div class="quote-table-header">Tabla de cotizaciones por servicio</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Descripción</th>
+          <th>Precio desde</th>
+          <th>Tiempo est.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Script / Sistema</td>
+          <td>Sistema de inventario, combat, stat, trading, etc.</td>
+          <td class="price-cell">$XX USD</td>
+          <td class="time-cell">2–5 días</td>
+        </tr>
+        <tr>
+          <td>UI / Interfaz</td>
+          <td>Menús, HUD, pantallas de carga, tiendas</td>
+          <td class="price-cell">$XX USD</td>
+          <td class="time-cell">1–3 días</td>
+        </tr>
+        <tr>
+          <td>DataStore / Saves</td>
+          <td>Sistema de guardado, leaderstats, rangos</td>
+          <td class="price-cell">$XX USD</td>
+          <td class="time-cell">2–4 días</td>
+        </tr>
+        <tr>
+          <td>Monetización</td>
+          <td>Gamepasses, Developer Products, VIP servers</td>
+          <td class="price-cell">$XX USD</td>
+          <td class="time-cell">1–3 días</td>
+        </tr>
+        <tr>
+          <td>Admin / Anti-cheat</td>
+          <td>Comandos de admin, detección de exploits</td>
+          <td class="price-cell">$XX USD</td>
+          <td class="time-cell">3–7 días</td>
+        </tr>
+        <tr>
+          <td>Juego completo</td>
+          <td>Desarrollo de experiencia desde cero</td>
+          <td class="price-cell">Cotización</td>
+          <td class="time-cell">15–30+ días</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">// 04 — Contacto</div>
+  <h2>Hablemos</h2>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p>¿Tienes un proyecto en mente? Contáctame por cualquiera de estos medios. Respondo en menos de 24 horas. Incluye en tu mensaje una descripción del proyecto y tu presupuesto aproximado para agilizar la cotización.</p>
+      <div class="contact-links">
+        <a href="https://discord.com/users/TUUSUARIO" class="contact-link">
+          <div class="contact-link-icon">💬</div>
+          <div>
+            <span class="contact-link-label">Discord</span>
+            TuUsuario#0000
+          </div>
+        </a>
+        <a href="https://twitter.com/TUUSUARIO" class="contact-link">
+          <div class="contact-link-icon">🐦</div>
+          <div>
+            <span class="contact-link-label">Twitter / X</span>
+            @TuUsuario
+          </div>
+        </a>
+        <a href="https://www.roblox.com/users/TUID/profile" class="contact-link">
+          <div class="contact-link-icon">🎮</div>
+          <div>
+            <span class="contact-link-label">Roblox Profile</span>
+            TuNombreEnRoblox
+          </div>
+        </a>
+        <a href="mailto:tuemail@email.com" class="contact-link">
+          <div class="contact-link-icon">📧</div>
+          <div>
+            <span class="contact-link-label">Email</span>
+            tuemail@email.com
+          </div>
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="notice">
+        <div class="notice-icon">⚡</div>
+        <p>
+          <strong>Antes de contactar:</strong> Ten listo el nombre del proyecto, plataforma de pago preferida (PayPal, Robux, etc.), fecha de entrega deseada y una descripción detallada. Esto ayuda a preparar una cotización más rápida y precisa.<br><br>
+          <strong>No hago:</strong> Exploits, hacks, cheats ni proyectos que violen los Términos de Servicio de Roblox.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 <span>TuNombre</span> · Roblox Developer · Hecho con ❤️ en Lua</p>
+</footer>
+
+</body>
+</html>
